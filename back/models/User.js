@@ -1,43 +1,33 @@
-const S = require("sequelize");
-const db = require("./db/index");
-class User extends S.Model {}
-
-User.init(
-  {
-    sessionID: {
-      type: S.STRING,
-    },
-    email: {
-      type: S.STRING,
-      allowNull: false,
-      validate: {
-        isEmail: true,
-      },
-      unique: {
-        args: true,
-        msg: "Email address already in use!",
-      },
-    },
-    nombres: {
-      type: S.STRING,
-      allowNull: false,
-    },
-    documento: {
-      type: S.INTEGER,
-      allowNull: false,
-    },
-    celular: {
-      type: S.INTEGER,
-      allowNull: false,
-    },
-    salt: {
-      type: S.STRING,
-    },
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+var userSchema = new Schema({
+  sessionID: {
+    type: String,
   },
-  {
-    sequelize: db,
-    modelName: "user",
-  }
-);
+  saldo: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  nombres: {
+    type: String,
+    required: true,
+  },
+  documento: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
+  celular: {
+    type: Number,
+    required: true,
+  },
+});
 
+const User = mongoose.model("Users", userSchema);
 module.exports = User;

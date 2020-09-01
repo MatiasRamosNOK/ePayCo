@@ -63,7 +63,10 @@ app.use("/", routes);
 
 app.use("/users", users);
 
-db.sync({ force: true })
+db.on(
+  "Error conectando",
+  console.error.bind(console, "MongoDB connection error:")
+)
   .then(() => {
     console.log("Se ha iniciado el servidor");
     app.listen(3005);

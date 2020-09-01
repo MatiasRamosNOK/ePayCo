@@ -1,8 +1,12 @@
 "use strict";
-var Sequelize = require("sequelize");
+var mongoose = require("mongoose");
 
-var db = new Sequelize("postgres://localhost:5432/epayco", {
-  logging: false,
-});
+//Set up default mongoose connection
+var mongoDB = "mongodb://localhost:27017/ePayCoMongo";
+mongoose.connect(mongoDB);
+// Get Mongoose to use the global promise library
+mongoose.Promise = global.Promise;
+//Get the default connection
+var db = mongoose.connection;
 
 module.exports = db;

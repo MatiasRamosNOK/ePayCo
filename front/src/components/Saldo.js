@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import Background from "../../../back/public/static/images/Register.jpg";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-import { sendRegisterUser } from "../redux/actions/user";
+import { consultarSaldo } from "../redux/actions/user";
 import { useDispatch, useSelector } from "react-redux";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -13,15 +13,13 @@ export default function Login() {
   const dispatch = useDispatch();
   const [documento, setDocumento] = React.useState(null);
   const [nombre, setNombre] = React.useState(null);
-  const [email, setEmail] = React.useState(null);
+  const [monto, setMonto] = React.useState(0);
   const [celular, setCelular] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [error, setError] = React.useState(null);
   const [exito, setExito] = React.useState(null);
   const [redirect, setRedirect] = React.useState(null);
-  const registroStatus = useSelector(
-    (store) => store.userReducer.user.registroOk
-  );
+  const saldoMonto = useSelector((store) => store.userReducer.user.saldo);
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -71,47 +69,27 @@ export default function Login() {
   };
 
   const checkUserData = () => {
-    if (validarEmail()) {
-      if (validarNombre()) {
-        if (validarDocumento()) {
-          if (validarCelular()) {
-            //En este punto esta todo bien
-            dispatch(sendRegisterUser(email, nombre, documento, celular));
-          } else {
-            setError("Celular no valido");
-            setOpen(true);
-          }
-        } else {
-          setError("Documento no valido");
-          setOpen(true);
-        }
-      } else {
-        setError("Nombre no valido");
-        setOpen(true);
+    if (validarCelular()) {
+      if (validarDocumento()) {
+        dispatch(consultarSaldo(documento, celular));
       }
-    } else {
-      setError("Email no valido");
-      setOpen(true);
     }
   };
 
   useEffect(() => {
-    if (registroStatus == true) {
+    if (saldoMonto > 0) {
+      setCelular("");
+      setDocumento("");
+      setMonto("");
+    } else if (saldoMonto == -1) {
       setNombre("");
       setEmail("");
       setCelular("");
       setDocumento("");
-      setExito(true);
-      setTimeout(() => setRedirect(true), 2500);
-    } else if (registroStatus == -1) {
-      setNombre("");
-      setEmail("");
-      setCelular("");
-      setDocumento("");
-      setError("El email ya se encuentra registrado");
+      setError("Los datos son incorrectos");
       setOpen(true);
     }
-  }, [registroStatus, redirect]);
+  }, [saldoMonto, redirect]);
 
   return (
     <div
@@ -123,7 +101,7 @@ export default function Login() {
       ) : (
         <>
           <div className="gridLogin">
-            <div className="registerBox">
+            <div className="reloadBox">
               <div
                 style={{
                   marginTop: 10,
@@ -150,33 +128,6 @@ export default function Login() {
                   placeholder="Ingresar documento"
                 />
               </div>
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <h3 style={{ fontSize: "25px" }}>Nombres</h3>
-
-                <input
-                  onChange={(e) => {
-                    setNombre(e.target.value);
-                  }}
-                  value={nombre}
-                  style={{
-                    fontSize: 20,
-                    border: "0px",
-                    borderBottom: "1px solid black",
-                  }}
-                  type="text"
-                  placeholder="Ingresar nombres"
-                />
-
-                {/* Aca va la contraseña*/}
-              </div>
 
               <div
                 style={{
@@ -185,33 +136,6 @@ export default function Login() {
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
-                }}
-              >
-                <h3 style={{ fontSize: "25px" }}>Email</h3>
-
-                <input
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                  value={email}
-                  style={{
-                    fontSize: 20,
-                    border: "0px ",
-                    borderBottom: "1px solid black",
-                  }}
-                  type="email"
-                  placeholder="Ingresar Email"
-                />
-              </div>
-
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: 15,
                 }}
               >
                 <h3 style={{ fontSize: "25px" }}>Celular</h3>
@@ -231,6 +155,38 @@ export default function Login() {
                 />
               </div>
 
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 25,
+                }}
+              >
+                <h3 style={{ fontSize: "25px" }}>Monto</h3>
+
+                <input
+                  onChange={(e) => {
+                    if (e.target.value < 0) {
+                      console.log("Value:", e.target.value);
+                      setMonto(0);
+                    } else {
+                      setMonto(e.target.value);
+                    }
+                  }}
+                  disabled
+                  value={saldoMonto}
+                  style={{
+                    fontSize: 20,
+                    border: "0px ",
+                    borderBottom: "1px solid black",
+                  }}
+                  type="number"
+                />
+              </div>
+
               <div className="contenedorBotonRegistrarse">
                 <button
                   className="botonRegistrarse"
@@ -238,7 +194,7 @@ export default function Login() {
                     checkUserData();
                   }}
                 >
-                  Registrarse
+                  Consultar saldo
                 </button>
               </div>
             </div>
@@ -254,7 +210,7 @@ export default function Login() {
             onClose={handleCloseExito}
           >
             <Alert onClose={handleCloseExito} severity="success">
-              El registro fue correcto,usted sera redirigido.
+              El saldo fue agregado satisfactoriamente!
             </Alert>
           </Snackbar>
         </>
