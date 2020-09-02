@@ -176,15 +176,22 @@ router.get("/allTokens", (req, res, next) => {
   });
 });
 
-router.get("/deleteAll", (req, res, next) => {
+router.get("/deleteAllUsers", (req, res, next) => {
   User.collection.drop().then((resp) => {
     console.log(resp);
     res.send("ok");
   });
 });
 
-router.get("/deleteTokens", (req, res, next) => {
+router.get("/deleteAllTokens", (req, res, next) => {
   Token.collection.drop().then((resp) => {
+    console.log(resp);
+    res.send("ok");
+  });
+});
+
+router.get("/deleteAllPagos", (req, res, next) => {
+  Pagos.collection.drop().then((resp) => {
     console.log(resp);
     res.send("ok");
   });

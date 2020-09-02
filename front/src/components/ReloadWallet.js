@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import Background from "../../../back/public/static/images/Register.jpg";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-import { recargarSaldo } from "../redux/actions/user";
+import { recargarSaldo, limpiarPago } from "../redux/actions/user";
 import { useDispatch, useSelector } from "react-redux";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -84,11 +84,13 @@ export default function Login() {
       setDocumento("");
       setMonto("");
       setExito(true);
-      setTimeout(() => setRedirect(true), 2500);
+      dispatch(limpiarPago());
+      setTimeout(() => setRedirect(true), 3000);
     } else if (saldoStatus == -1) {
       setCelular("");
       setDocumento("");
       setError("Los datos son incorrectos");
+      dispatch(limpiarPago());
       setOpen(true);
     }
   }, [saldoStatus, redirect]);

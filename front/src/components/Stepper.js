@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import {
   realizarPago,
   limpiarPago,
@@ -58,6 +59,7 @@ export default function VerticalLinearStepper() {
   const [exito, setExito] = React.useState(false);
   const [error, setError] = React.useState(null);
   const [redirect, setRedirect] = React.useState(null);
+  const [waiting, setWaiting] = React.useState(false);
   const steps = getSteps();
 
   const handleClose = (event, reason) => {
@@ -181,6 +183,7 @@ export default function VerticalLinearStepper() {
   };
 
   const handleNext = () => {
+    setWaiting(true);
     if (activeStep == 0) {
       console.log("Entro en step 0");
       dispatch(realizarPago(idCompra, documento, celular));
@@ -210,17 +213,20 @@ export default function VerticalLinearStepper() {
     if (activeStep == 0) {
       if (statusPago !== "Correcto" && statusPago !== null) {
         console.log("Entro en el primer if");
+        setWaiting(false);
         setError(statusPago);
         setOpen(true);
         dispatch(limpiarPago());
       } else if (statusPago == "Correcto") {
         console.log("Entro en el primer else");
+        setWaiting(false);
         setOpenExito(true);
         setExito("Datos correctos");
         avanzar();
       }
     } else if (activeStep == 1) {
       if (statusToken) {
+        setWaiting(false);
         console.log("Entro en el segundo if");
         setOpenExito(true);
         setExito("Pago realizado correctamente");
@@ -248,17 +254,31 @@ export default function VerticalLinearStepper() {
                     Back
                   </Button>
                   {isButtonDisable() ? (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      className={classes.button}
-                      disabled={false}
-                    >
-                      {activeStep == 0 ? "Validar" : null}
-                      {activeStep == 1 ? "Comprobar" : null}
-                      {activeStep == 2 ? "Finalizar" : null}
-                    </Button>
+                    <>
+                      {waiting ? (
+                        <CircularProgress
+                          style={{
+                            width: 30,
+                            height: 30,
+                            marginTop: 40,
+                            marginLeft: 25,
+                            color: "green",
+                          }}
+                        />
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleNext}
+                          className={classes.button}
+                          disabled={false}
+                        >
+                          {activeStep == 0 ? "Validar" : null}
+                          {activeStep == 1 ? "Comprobar" : null}
+                          {activeStep == 2 ? "Finalizar" : null}
+                        </Button>
+                      )}
+                    </>
                   ) : (
                     false
                   )}

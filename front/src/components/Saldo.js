@@ -15,10 +15,19 @@ export default function Login() {
   const [nombre, setNombre] = React.useState(null);
   const [monto, setMonto] = React.useState(0);
   const [celular, setCelular] = React.useState(null);
-
+  const [error, setError] = React.useState(null);
   const [exito, setExito] = React.useState(null);
+  const [open, setOpen] = React.useState(null);
   const [redirect, setRedirect] = React.useState(null);
   const saldoMonto = useSelector((store) => store.userReducer.user.saldo);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const handleCloseExito = (event, reason) => {
     if (reason === "clickaway") {
@@ -194,6 +203,12 @@ export default function Login() {
           >
             <Alert onClose={handleCloseExito} severity="success">
               El saldo fue agregado satisfactoriamente!
+            </Alert>
+          </Snackbar>
+
+          <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              {error}
             </Alert>
           </Snackbar>
         </>

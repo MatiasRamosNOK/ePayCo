@@ -36,7 +36,15 @@ export default function reducer(state = inicialState, action) {
     case REALIZAR_PAGO:
       return { ...state, user: { ...state.user, pagoRealizado: action.data } };
     case LIMPIAR_PAGO:
-      return { ...state, user: { ...state.user, pagoRealizado: null } };
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          pagoRealizado: null,
+          saldo: null,
+          tokenCorrecto: null,
+        },
+      };
     case COMPROBAR_TOKEN:
       return { ...state, user: { ...state.user, tokenCorrecto: action.data } };
     default:
