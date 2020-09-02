@@ -13,10 +13,14 @@ router.post("/generarPago", (req, res, next) => {
   });
 });
 
-router.post("/chequearToken", (req, res, next) => {
-  let documento = req.body.documento;
-  let idPago = req.body.idPago;
-  let idToken = req.body.idToken;
+router.get("/allPagos", (req, res, next) => {
+  Pagos.find({}, function (err, users) {
+    var userMap = {};
+    users.forEach(function (user) {
+      userMap[user._id] = user;
+    });
+    res.send(userMap);
+  });
 });
 
 module.exports = router;

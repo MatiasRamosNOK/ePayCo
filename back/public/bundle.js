@@ -62011,6 +62011,11 @@ function VerticalLinearStepper() {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Escriba el ID enviado a su correo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "number",
           value: codigoVerificacion,
+          style: {
+            border: "none",
+            borderBottom: "1px solid black",
+            fontSize: 20
+          },
           onChange: function onChange(e) {
             if (e.target.value < 0) {
               setCodigoVerificacion(0);

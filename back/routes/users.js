@@ -99,8 +99,6 @@ router.post("/realizarPago", function (req, res, next) {
           //Si los datos del usuario son correctos entonces
           //Verifico que posea el saldo suficiente
           if (usuario.saldo - pago.monto >= 0) {
-            console.log("Usuario saldo:", usuario.saldo);
-            console.log("Pago monto:", pago.monto);
             //En este caso esta todo bien,
             //Aca genero un ID de 6 digitos unicos para el usuario y se lo envio al email
             let token = getRandomArbitrary();
@@ -123,7 +121,7 @@ router.post("/realizarPago", function (req, res, next) {
                     res.send(500, err.message);
                   } else {
                     console.log("Email sent");
-                    res.status(200).jsonp(req.body);
+                    res.sendStatus(200);
                   }
                 });
               })
@@ -153,7 +151,11 @@ router.post("/comprobarToken", (req, res, next) => {
             { documento: documento },
             { $set: { saldo: newSaldo } }
           ).then(() => {
-            res.sendStatus(200);
+            Token.deleteOne({ _id: token._id }).then(() => {
+              Pago.deleteOne({ _id: pago._id }).then(() => {
+                res.sendStatus(200);
+              });
+            });
           });
         });
       });

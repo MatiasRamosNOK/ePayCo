@@ -144,6 +144,11 @@ export default function VerticalLinearStepper() {
             <input
               type="number"
               value={codigoVerificacion}
+              style={{
+                border: "none",
+                borderBottom: "1px solid black",
+                fontSize: 20,
+              }}
               onChange={(e) => {
                 if (e.target.value < 0) {
                   setCodigoVerificacion(0);
