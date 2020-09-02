@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 var userSchema = new Schema({
-  sessionID: {
-    type: String,
-  },
   saldo: {
     type: Number,
     required: false,

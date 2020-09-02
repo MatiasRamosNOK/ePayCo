@@ -12,6 +12,7 @@ var passport = require("passport");
 var bodyParser = require("body-parser");
 var path = require("path");
 var users = require("./routes/users");
+var pagos = require("./routes/pagos");
 const volleyball = require("volleyball");
 app.use(volleyball);
 app.use(express.json());
@@ -62,6 +63,8 @@ passport.deserializeUser(function (id, done) {
 app.use("/", routes);
 
 app.use("/users", users);
+
+app.use("/pagos", pagos);
 
 db.on(
   "Error conectando",

@@ -86,8 +86,6 @@ export default function Login() {
       setExito(true);
       setTimeout(() => setRedirect(true), 2500);
     } else if (saldoStatus == -1) {
-      setNombre("");
-      setEmail("");
       setCelular("");
       setDocumento("");
       setError("Los datos son incorrectos");

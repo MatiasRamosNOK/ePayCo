@@ -48,6 +48,13 @@ body {
   border-radius: 15px;
 }
 
+.paymentBox {
+  height: 520px;
+  width: 350px;
+  background-color: rgba(250, 250, 250, 1);
+  border-radius: 15px;
+}
+
 .botonRegistrarse {
   color: white;
   border-color: black;

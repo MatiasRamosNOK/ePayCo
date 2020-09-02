@@ -15,18 +15,10 @@ export default function Login() {
   const [nombre, setNombre] = React.useState(null);
   const [monto, setMonto] = React.useState(0);
   const [celular, setCelular] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
-  const [error, setError] = React.useState(null);
+
   const [exito, setExito] = React.useState(null);
   const [redirect, setRedirect] = React.useState(null);
   const saldoMonto = useSelector((store) => store.userReducer.user.saldo);
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
 
   const handleCloseExito = (event, reason) => {
     if (reason === "clickaway") {
@@ -77,17 +69,12 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (saldoMonto > 0) {
-      setCelular("");
-      setDocumento("");
-      setMonto("");
-    } else if (saldoMonto == -1) {
-      setNombre("");
-      setEmail("");
+    if (saldoMonto == -1) {
       setCelular("");
       setDocumento("");
       setError("Los datos son incorrectos");
       setOpen(true);
+      setMonto("");
     }
   }, [saldoMonto, redirect]);
 
@@ -177,7 +164,7 @@ export default function Login() {
                     }
                   }}
                   disabled
-                  value={saldoMonto}
+                  value={saldoMonto != -1 ? saldoMonto : monto}
                   style={{
                     fontSize: 20,
                     border: "0px ",
@@ -199,11 +186,7 @@ export default function Login() {
               </div>
             </div>
           </div>
-          <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="error">
-              {error}
-            </Alert>
-          </Snackbar>
+
           <Snackbar
             open={exito}
             autoHideDuration={2500}
